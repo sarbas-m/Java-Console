@@ -23,7 +23,7 @@ public class CmsDaoImplementation implements ICmsDaoService {
 	// query
 	static String SEARCH_USER = "SELECT * FROM USERS WHERE userName=? and passWord=?";
 	static String DISPLAY_APP = "SELECT * FROM APPOINMENTS INNER JOIN PATIENTS ON APPOINMENTS.PATIENTID=PATIENTS.PATIENTID INNER JOIN STAFFS ON STAFFS.STAFFID=APPOINMENTS.STAFFID WHERE userId=? AND APPOINMENTS.isActive='yes' AND DATE(APPOINMENTS.createdOn) = CURDATE()";
-	static String PATIENT_DATA = "SELECT * FROM APPOINMENTS INNER JOIN PATIENTS ON APPOINMENTS.PATIENTID=PATIENTS.PATIENTID WHERE TOKENNO=? AND userId=? ";
+	static String PATIENT_DATA = "SELECT * FROM APPOINMENTS INNER JOIN PATIENTS ON APPOINMENTS.PATIENTID=PATIENTS.PATIENTID inner join staffs on STAFFS.STAFFID=APPOINMENTS.STAFFID WHERE TOKENNO=? AND userId=? ";
 	static String INSERT_DIAGNOS = "INSERT INTO prescriptions(diagnos,notes,appoinmentId)values(?,?,?)";
 	static String INSERT_MEDICINE = "INSERT INTO medicine_prescription(medicinesId,dosageId,days,appoinmentId)values(?,?,?,?)";
 	static String INSERT_TEST = "INSERT INTO test_prescription(testId,appoinmentId)values(?,?)";
@@ -118,6 +118,7 @@ public class CmsDaoImplementation implements ICmsDaoService {
 
 		connection = ConnectionFactory.getDataBaseConnection();
 		int a = getUserFromStaffs(user);
+		user.setUserId(a);
 
 		statement = connection.prepareStatement(DISPLAY_APP);
 		statement.setInt(1, a);
@@ -191,12 +192,13 @@ public class CmsDaoImplementation implements ICmsDaoService {
 
 	public PatientData patientData(int token,User user) throws Exception {
 		PatientData data = null;
+		System.out.println(user);
 		connection = ConnectionFactory.getDataBaseConnection();
 		statement = connection.prepareStatement(PATIENT_DATA);
 		statement.setInt(1, token);
 		statement.setInt(2, user.getUserId());
 		
-
+        
 		resultSet = statement.executeQuery();
 		if (resultSet.next()) {
 			int appoinmentId = resultSet.getInt("appoinmentId");
@@ -211,6 +213,7 @@ public class CmsDaoImplementation implements ICmsDaoService {
 					patientRegNo, patientName, patientGender, patientBloodGroup);
 
 		}
+		
 
 		return data;
 

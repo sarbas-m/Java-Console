@@ -228,7 +228,7 @@ public class CmsMenu {
 			try {
 				System.out
 						.println("\n1.Select Patient From Appointments List\n2.Logout");
-				int choice = Integer.parseInt(input.nextLine());
+				int choice = Integer.parseInt(input.next());
 
 				if (choice == 1) {
 					patient(user);
@@ -253,7 +253,9 @@ public class CmsMenu {
 			try {
 				System.out.println("\nSelect token:");
 				int token = Integer.parseInt(input.nextLine());
+			
 				PatientData paitent = daoService.patientData(token,user);
+				System.out.println(paitent);
 				if (paitent != null) {
 					System.out.println("\n\t\t\t\tToken no : " + token
 							+ " Patient details");
